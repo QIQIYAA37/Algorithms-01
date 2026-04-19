@@ -1,0 +1,92 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Test to reverse the array
+      id: test-to-reverse-the-array
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test to reverse the array
+        setup-command: mvn compile
+        command: mvn -Dtest=FirstTests#reverseTest test
+        timeout: 10
+    - name: Test to sort the array
+      id: test-to-sort-the-array
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test to sort the array
+        setup-command: mvn compile
+        command: mvn -Dtest=FirstTests#sortTest test
+        timeout: 10
+    - name: Reverse array with numbers
+      id: reverse-array-with-numbers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Reverse array with numbers
+        setup-command: mvn compile
+        command: mvn -Dtest=SecondTests#reverseTest test
+        timeout: 10
+    - name: Sorting the array with numbers
+      id: sorting-the-array-with-numbers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Sorting the array with numbers
+        setup-command: mvn compile
+        command: mvn -Dtest=SecondTests#sortTest test
+        timeout: 10
+    - name: Reverse the generic array with integers
+      id: reverse-the-generic-array-with-integers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Reverse the generic array with integers
+        setup-command: mvn compile
+        command: mvn -Dtest=GenericTests#reverseTestInteger test
+        timeout: 10
+    - name: Reverse the generic array with strings
+      id: reverse-the-generic-array-with-strings
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Reverse the generic array with strings
+        setup-command: mvn compile
+        command: mvn -Dtest=GenericTests#reverseTestString test
+        timeout: 10
+    - name: Sort the generic array with integers
+      id: sort-the-generic-array-with-integers
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Sort the generic array with integers
+        setup-command: mvn compile
+        command: mvn -Dtest=GenericTests#sortTestInteger test
+        timeout: 10
+    - name: Sort the generic array with strings
+      id: sort-the-generic-array-with-strings
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Sort the generic array with strings
+        setup-command: mvn compile
+        command: mvn -Dtest=GenericTests#sortTestString test
+        timeout: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST-TO-REVERSE-THE-ARRAY_RESULTS: "${{steps.test-to-reverse-the-array.outputs.result}}"
+        TEST-TO-SORT-THE-ARRAY_RESULTS: "${{steps.test-to-sort-the-array.outputs.result}}"
+        REVERSE-ARRAY-WITH-NUMBERS_RESULTS: "${{steps.reverse-array-with-numbers.outputs.result}}"
+        SORTING-THE-ARRAY-WITH-NUMBERS_RESULTS: "${{steps.sorting-the-array-with-numbers.outputs.result}}"
+        REVERSE-THE-GENERIC-ARRAY-WITH-INTEGERS_RESULTS: "${{steps.reverse-the-generic-array-with-integers.outputs.result}}"
+        REVERSE-THE-GENERIC-ARRAY-WITH-STRINGS_RESULTS: "${{steps.reverse-the-generic-array-with-strings.outputs.result}}"
+        SORT-THE-GENERIC-ARRAY-WITH-INTEGERS_RESULTS: "${{steps.sort-the-generic-array-with-integers.outputs.result}}"
+        SORT-THE-GENERIC-ARRAY-WITH-STRINGS_RESULTS: "${{steps.sort-the-generic-array-with-strings.outputs.result}}"
+      with:
+        runners: test-to-reverse-the-array,test-to-sort-the-array,reverse-array-with-numbers,sorting-the-array-with-numbers,reverse-the-generic-array-with-integers,reverse-the-generic-array-with-strings,sort-the-generic-array-with-integers,sort-the-generic-array-with-strings
